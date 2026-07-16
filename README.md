@@ -10,7 +10,10 @@ It's a ledger service for a bank.
 - auth
 - cross-bank transfers
 
-## Service boundaries
+# business invariants
+- balance can not go negative
+
+# Service boundaries
 - service will be used directly by customers
 - no other services in the system  
 - one instance of the service
@@ -19,12 +22,11 @@ It's a ledger service for a bank.
 - p95 latency = 300 ms
 
 # Service design
-one instance of sql DB is sufficient 
+one instance of sql DB (H2) is sufficient 
 
 ## Domain entities
 - Account
   - id(pk)
-  - user(fk)
   - balance
   - version -- for optimistic locking
   - modifiedAt
