@@ -19,7 +19,7 @@ CREATE TABLE money_transfer (
     CONSTRAINT fk_transfer_to_account FOREIGN KEY (to_account_id) REFERENCES account (id),
     CONSTRAINT chk_transfer_different_accounts CHECK (from_account_id <> to_account_id),
     CONSTRAINT chk_transfer_amount_positive CHECK (amount > 0),
-    CONSTRAINT chk_transfer_status CHECK (status IN ('PENDING', 'FINISHED', 'FAILED'))
+    CONSTRAINT chk_transfer_status CHECK (status = 'COMPLETED')
 );
 
 CREATE INDEX idx_transfer_from_account_id ON money_transfer (from_account_id);

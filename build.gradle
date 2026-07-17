@@ -23,6 +23,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-h2console'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-flyway'
+    implementation 'org.springframework.retry:spring-retry:2.0.12'
+    implementation 'org.aspectj:aspectjweaver'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'

@@ -29,7 +29,7 @@ class TransferControllerTests {
     void delegatesTransferRequestToTheService() {
         BigDecimal amount = new BigDecimal("10.00");
         TransferResult expected = new TransferResult(42L, 1L, 2L, amount, "request-1",
-                MoneyTransferStatus.FINISHED, Instant.parse("2026-07-17T10:00:00Z"));
+                MoneyTransferStatus.COMPLETED, Instant.parse("2026-07-17T10:00:00Z"));
         when(transferService.transfer(1L, 2L, amount, "request-1")).thenReturn(expected);
 
         TransferResult actual = controller.transfer(1L, 2L, amount, "request-1");

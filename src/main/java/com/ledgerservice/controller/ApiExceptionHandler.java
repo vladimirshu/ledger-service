@@ -1,6 +1,7 @@
 package com.ledgerservice.controller;
 
 import com.ledgerservice.service.TransferException;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +31,8 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest().body(new ApiError("INVALID_REQUEST", "Request parameters are invalid"));
     }
 
-    @ExceptionHandler(OptimisticLockingFailureException.class)
-    ResponseEntity<ApiError> handleConcurrentUpdate(OptimisticLockingFailureException exception) {
+    @ExceptionHandler({OptimisticLockingFailureException.class, OptimisticLockException.class})
+    ResponseEntity<ApiError> handleConcurrentUpdate(Exception exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ApiError("CONCURRENT_UPDATE", "An account changed concurrently; retry the request"));
     }

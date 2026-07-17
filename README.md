@@ -18,9 +18,6 @@ It's a ledger service for a bank.
 - no other services in the system  
 - one instance of the service
 
-# Non-functional requirements
-- p95 latency = 300 ms
-
 # Service design
 one instance of sql DB (H2) is sufficient 
 
@@ -35,7 +32,7 @@ one instance of sql DB (H2) is sufficient
   - toAccount(fk)
   - amount
   - idempotencyKey -- for avoiding repeated transfers
-  - status[PENDING, FINISHED, FAILED]
+  - status[COMPLETED]
   - createdAt
 
 ## API
@@ -51,5 +48,12 @@ POST /api/v1/transfer
 - API Request validated
 - transaction is created
 - account states are validated
-- balance of the account with the lowest ID is updated (to avoid deadlocks)
+- balances are updated in deterministic account-ID order to reduce deadlock risk
 - balance of the second account is updated
+- an immutable completed transfer is recorded; rejected or rolled-back attempts are not ledger entries
+
+## Concurrency and retries
+- account updates use optimistic locking
+- transient optimistic-lock and database-integrity conflicts are retried up to three times
+- each retry runs in a new database transaction and reads the latest account and transfer state
+- concurrent requests with the same idempotency key return the already committed transfer after retrying

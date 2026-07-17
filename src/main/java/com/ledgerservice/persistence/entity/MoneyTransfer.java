@@ -37,7 +37,7 @@ public class MoneyTransfer {
     private String idempotencyKey;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 16)
+    @Column(nullable = false, updatable = false, length = 16)
     private MoneyTransferStatus status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -47,12 +47,12 @@ public class MoneyTransfer {
     }
 
     public MoneyTransfer(Account fromAccount, Account toAccount, BigDecimal amount,
-                         String idempotencyKey, MoneyTransferStatus status) {
+                         String idempotencyKey) {
         this.fromAccount = Objects.requireNonNull(fromAccount, "fromAccount must not be null");
         this.toAccount = Objects.requireNonNull(toAccount, "toAccount must not be null");
         this.amount = Objects.requireNonNull(amount, "amount must not be null");
         this.idempotencyKey = Objects.requireNonNull(idempotencyKey, "idempotencyKey must not be null");
-        this.status = Objects.requireNonNull(status, "status must not be null");
+        this.status = MoneyTransferStatus.COMPLETED;
     }
 
     @PrePersist
@@ -70,7 +70,4 @@ public class MoneyTransfer {
     public MoneyTransferStatus getStatus() { return status; }
     public Instant getCreatedAt() { return createdAt; }
 
-    public void setStatus(MoneyTransferStatus status) {
-        this.status = Objects.requireNonNull(status, "status must not be null");
-    }
 }

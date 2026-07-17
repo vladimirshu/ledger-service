@@ -44,12 +44,12 @@ class PersistenceIntegrationTests {
         Account from = accountRepository.save(new Account(new BigDecimal("100.00")));
         Account to = accountRepository.save(new Account(new BigDecimal("25.00")));
         MoneyTransfer transfer = transferRepository.saveAndFlush(new MoneyTransfer(
-                from, to, new BigDecimal("10.00"), "request-123", MoneyTransferStatus.PENDING));
+                from, to, new BigDecimal("10.00"), "request-123"));
 
         MoneyTransfer persisted = transferRepository.findByIdempotencyKey("request-123").orElseThrow();
 
         assertThat(persisted.getId()).isEqualTo(transfer.getId());
-        assertThat(persisted.getStatus()).isEqualTo(MoneyTransferStatus.PENDING);
+        assertThat(persisted.getStatus()).isEqualTo(MoneyTransferStatus.COMPLETED);
         assertThat(persisted.getCreatedAt()).isNotNull();
     }
 }

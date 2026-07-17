@@ -53,7 +53,7 @@ class TransferServiceTests {
 
         TransferResult result = service.transfer(2L, 1L, new BigDecimal("10.00"), "request-1");
 
-        assertThat(result.status()).isEqualTo(MoneyTransferStatus.FINISHED);
+        assertThat(result.status()).isEqualTo(MoneyTransferStatus.COMPLETED);
         assertThat(result.fromAccount()).isEqualTo(2L);
         assertThat(result.toAccount()).isEqualTo(1L);
         InOrder order = inOrder(lowerIdAccount, entityManager, higherIdAccount);
@@ -68,12 +68,12 @@ class TransferServiceTests {
         when(lowerIdAccount.getId()).thenReturn(1L);
         when(higherIdAccount.getId()).thenReturn(2L);
         MoneyTransfer existing = new MoneyTransfer(lowerIdAccount, higherIdAccount,
-                new BigDecimal("10.00"), "request-1", MoneyTransferStatus.FINISHED);
+                new BigDecimal("10.00"), "request-1");
         when(transferRepository.findByIdempotencyKey("request-1")).thenReturn(Optional.of(existing));
 
         TransferResult result = service.transfer(1L, 2L, new BigDecimal("10.0"), "request-1");
 
-        assertThat(result.status()).isEqualTo(MoneyTransferStatus.FINISHED);
+        assertThat(result.status()).isEqualTo(MoneyTransferStatus.COMPLETED);
         verify(accountRepository, never()).findAllByIdInOrderByIdAsc(any());
         verify(transferRepository, never()).save(any());
     }
@@ -84,7 +84,7 @@ class TransferServiceTests {
         when(lowerIdAccount.getId()).thenReturn(1L);
         when(higherIdAccount.getId()).thenReturn(2L);
         MoneyTransfer existing = new MoneyTransfer(lowerIdAccount, higherIdAccount,
-                new BigDecimal("10.00"), "request-1", MoneyTransferStatus.FINISHED);
+                new BigDecimal("10.00"), "request-1");
         when(transferRepository.findByIdempotencyKey("request-1")).thenReturn(Optional.of(existing));
 
         assertThatThrownBy(() -> service.transfer(1L, 2L, new BigDecimal("11.00"), "request-1"))
